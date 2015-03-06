@@ -1,5 +1,5 @@
 # src
-Scripts for Genotyping By Sequencing Analyses
+Scripts for Genotyping By Sequencing (GBS) Analyses
 
 
 chimeracount.sh: count the number of sequences with a given motif in a fastq file
