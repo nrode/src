@@ -4,6 +4,12 @@
 
 Cf Gitbook V2 on the internet
 
+! Should always connect with scp -X to the serveur so that you can have a
+graphic interface
+
+#Fork an existing repository#
+#############################
+
 Redirect the script towards ones account with “Fork”
 Get the modifications on the server, on Marmadais:
 
