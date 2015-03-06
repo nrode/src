@@ -1,0 +1,1261 @@
+#Aim: perform a fastqc analysis on a folder containing either the rawdata (argument1=1) or the demultiplexed data (arument1=2) in a given folder (argument 2)
+
+if [ "$1" -ne "1" ] && [ "$1" -ne "2" ] && [ "$1" -ne "3" ] || [ -z $2 ]
+then
+
+echo "usage: \$1 =  1: analysis on raw_data (by  index)"
+echo "or 2: analysis on demultiplexed data (by index/tag)"
+echo "or 3: analysis on demultiplexed and trimmed data (by index/tag)echo "
+echo "\$2 = name of the project folder"
+
+exit 
+fi
++ '[' 1 -ne 1 ']'
++ '[' -z PilotJan2015 ']'
+
+project_folder=$2
++ project_folder=PilotJan2015
+cd  ~/sead/projects/${project_folder}
++ cd /home/rode/sead/projects/PilotJan2015
+if (( $1==1 )); then
+	echo "analysis on raw_data"
+	qualitydir="qualityraw_${project_folder}"
+	echo $qualitydir
+	pathtodata=../../../raw_data/${project_folder}
+elif (( $1==2 )); then
+	echo "analysis on demultiplexed data"
+	qualitydir="qualitydemultiplex_${project_folder}"
+	pathtodata=./demultiplex_${project_folder}/
+else
+	echo "analysis on trimmed data"
+	qualitydir="qualityposttrim_${project_folder}"
+	pathtodata=./trimmomatic_${project_folder}/
+fi
++ ((  1==1  ))
++ echo 'analysis on raw_data'
+analysis on raw_data
++ qualitydir=qualityraw_PilotJan2015
++ echo qualityraw_PilotJan2015
+qualityraw_PilotJan2015
++ pathtodata=../../../raw_data/PilotJan2015
+
+if [[ -d $qualitydir ]]; then
+	echo "Former folder ($qualitydir) has been removed."
+	rm -r $qualitydir;
+fi
++ [[ -d qualityraw_PilotJan2015 ]]
++ echo 'Former folder (qualityraw_PilotJan2015) has been removed.'
+Former folder (qualityraw_PilotJan2015) has been removed.
++ rm -r qualityraw_PilotJan2015
+
+mkdir $qualitydir
++ mkdir qualityraw_PilotJan2015
+cd $qualitydir
++ cd qualityraw_PilotJan2015
+
+
+index=$(awk '{print $1}' ../tags/index.txt)
+awk '{print $1}' ../tags/index.txt
+++ awk '{print $1}' ../tags/index.txt
++ index='RPI2
+RPI3
+RPI4
+RPI5
+RPI6
+RPI7
+RPI8
+RPI9'
+
+#index="RPI2"
+
+#Loop over each index
+for indexname in $index; do
+	
+	s=$(($(expr substr $indexname 4 4)-1))
+
+	pathtotags="../tags/${indexname}_*.txt"
+	tag=$(awk '{print $1}' $pathtotags)
+	#tag="L1107"
+	
+	for tagname in $tag;do
+
+		indextag=${indexname}_S${s}_${tagname}
+
+		if (($1==1));then
+	
+			#Keep previous file and append sequences for this index/tag combination
+			../../../src/createadapter.sh -i $indexname -t $tagname -o adapter.txt -k
+	
+		else
+			#Erase previous file and create a new file for this index/tag combination
+			../../../src/createadapter.sh -i $indexname -t $tagname -o adaper.txt
+
+			for file in ${pathtodata}/${indextag}_R*.fastq.gz;do 
+				
+				#Analysis with in-house adapters
+				/usr/local/bioinfo/FastQC/fastqc -o ./ -a adapter.txt -t 2 $file
+
+			done
+	
+		fi 
+	done
+
+	if (($1==1));then
+		
+		#Analysis with in-house adapters
+		/usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ${pathtodata}/${indexname}*.fastq.gz
+	fi
+
+done
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI2 4 4
++ s=1
++ pathtotags='../tags/RPI2_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI2_S1.txt
++ tag='L1107
+L1130
+F89-13-101
+ESP163-2009-02
+426-A
+L1119
+269-C
+L1086'
++ for tagname in '$tag'
++ indextag=RPI2_S1_L1107
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t L1107 -o adapter.txt -k
+File "adapter.txt" has been created.
+Adapter sequences for forward and reverse reads (tag: L1107) have been created.
++ for tagname in '$tag'
++ indextag=RPI2_S1_L1130
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t L1130 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1130) have been created.
++ for tagname in '$tag'
++ indextag=RPI2_S1_F89-13-101
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t F89-13-101 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: F89-13-101) have been created.
++ for tagname in '$tag'
++ indextag=RPI2_S1_ESP163-2009-02
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t ESP163-2009-02 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: ESP163-2009-02) have been created.
++ for tagname in '$tag'
++ indextag=RPI2_S1_426-A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t 426-A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 426-A) have been created.
++ for tagname in '$tag'
++ indextag=RPI2_S1_L1119
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t L1119 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1119) have been created.
++ for tagname in '$tag'
++ indextag=RPI2_S1_269-C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t 269-C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 269-C) have been created.
++ for tagname in '$tag'
++ indextag=RPI2_S1_L1086
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI2 -t L1086 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1086) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI2_S1_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI2_S1_L001_R2_001.fastq.gz
+Started analysis of RPI2_S1_L001_R1_001.fastq.gz
+Started analysis of RPI2_S1_L001_R2_001.fastq.gz
+Approx 5% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 5% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 10% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 10% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 15% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 15% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 20% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 20% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 25% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 30% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 25% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 35% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 30% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 40% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 35% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 45% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 40% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 50% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 45% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 55% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 50% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 60% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 55% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 65% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 60% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 70% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 75% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 65% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 80% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 70% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 85% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 75% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 90% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 80% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 95% complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 85% complete for RPI2_S1_L001_R2_001.fastq.gz
+Analysis complete for RPI2_S1_L001_R1_001.fastq.gz
+Approx 90% complete for RPI2_S1_L001_R2_001.fastq.gz
+Approx 95% complete for RPI2_S1_L001_R2_001.fastq.gz
+Analysis complete for RPI2_S1_L001_R2_001.fastq.gz
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI3 4 4
++ s=2
++ pathtotags='../tags/RPI3_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI3_S2.txt
++ tag='L1107
+F89-13-42
+ESP163-2009-10
+1123
+1113
+F89-13-156
+L1109
+A17'
++ for tagname in '$tag'
++ indextag=RPI3_S2_L1107
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t L1107 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1107) have been created.
++ for tagname in '$tag'
++ indextag=RPI3_S2_F89-13-42
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t F89-13-42 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: F89-13-42) have been created.
++ for tagname in '$tag'
++ indextag=RPI3_S2_ESP163-2009-10
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t ESP163-2009-10 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: ESP163-2009-10) have been created.
++ for tagname in '$tag'
++ indextag=RPI3_S2_1123
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t 1123 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 1123) have been created.
++ for tagname in '$tag'
++ indextag=RPI3_S2_1113
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t 1113 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 1113) have been created.
++ for tagname in '$tag'
++ indextag=RPI3_S2_F89-13-156
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t F89-13-156 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: F89-13-156) have been created.
++ for tagname in '$tag'
++ indextag=RPI3_S2_L1109
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t L1109 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1109) have been created.
++ for tagname in '$tag'
++ indextag=RPI3_S2_A17
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI3 -t A17 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: A17) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI3_S2_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI3_S2_L001_R2_001.fastq.gz
+Started analysis of RPI3_S2_L001_R1_001.fastq.gz
+Started analysis of RPI3_S2_L001_R2_001.fastq.gz
+Approx 5% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 5% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 10% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 10% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 15% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 15% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 20% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 20% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 25% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 25% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 30% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 30% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 35% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 35% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 40% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 40% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 45% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 45% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 50% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 50% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 55% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 55% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 60% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 60% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 65% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 65% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 70% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 70% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 75% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 75% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 80% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 80% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 85% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 85% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 90% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 90% complete for RPI3_S2_L001_R2_001.fastq.gz
+Approx 95% complete for RPI3_S2_L001_R1_001.fastq.gz
+Approx 95% complete for RPI3_S2_L001_R2_001.fastq.gz
+Analysis complete for RPI3_S2_L001_R1_001.fastq.gz
+Analysis complete for RPI3_S2_L001_R2_001.fastq.gz
+Failed to process file RPI3_S2_L001_R2_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+Failed to process file RPI3_S2_L001_R1_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI4 4 4
++ s=3
++ pathtotags='../tags/RPI4_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI4_S3.txt
++ tag='Mix_3A
+Mix_3B
+Mix_3C
+Mix_3D
+Mix_8A
+Mix_8B
+Mix_8C
+Mix_8D'
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_3A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_3A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3A) have been created.
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_3B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_3B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3B) have been created.
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_3C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_3C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3C) have been created.
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_3D
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_3D -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3D) have been created.
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_8A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_8A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8A) have been created.
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_8B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_8B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8B) have been created.
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_8C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_8C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8C) have been created.
++ for tagname in '$tag'
++ indextag=RPI4_S3_Mix_8D
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI4 -t Mix_8D -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8D) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI4_S3_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI4_S3_L001_R2_001.fastq.gz
+Started analysis of RPI4_S3_L001_R1_001.fastq.gz
+Started analysis of RPI4_S3_L001_R2_001.fastq.gz
+Approx 5% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 5% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 10% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 10% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 15% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 15% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 20% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 20% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 25% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 25% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 30% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 30% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 35% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 35% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 40% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 40% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 45% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 45% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 50% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 50% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 55% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 55% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 60% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 60% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 65% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 65% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 70% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 70% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 75% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 75% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 80% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 80% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 85% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 85% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 90% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 90% complete for RPI4_S3_L001_R2_001.fastq.gz
+Approx 95% complete for RPI4_S3_L001_R1_001.fastq.gz
+Approx 95% complete for RPI4_S3_L001_R2_001.fastq.gz
+Analysis complete for RPI4_S3_L001_R1_001.fastq.gz
+Analysis complete for RPI4_S3_L001_R2_001.fastq.gz
+Failed to process file RPI4_S3_L001_R1_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+Failed to process file RPI4_S3_L001_R2_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI5 4 4
++ s=4
++ pathtotags='../tags/RPI5_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI5_S4.txt
++ tag='Mix_3A
+Mix_3B
+Mix_3C
+A17
+Mix_8A
+Mix_8B
+Mix_8C
+Mix_8D'
++ for tagname in '$tag'
++ indextag=RPI5_S4_Mix_3A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t Mix_3A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3A) have been created.
++ for tagname in '$tag'
++ indextag=RPI5_S4_Mix_3B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t Mix_3B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3B) have been created.
++ for tagname in '$tag'
++ indextag=RPI5_S4_Mix_3C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t Mix_3C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3C) have been created.
++ for tagname in '$tag'
++ indextag=RPI5_S4_A17
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t A17 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: A17) have been created.
++ for tagname in '$tag'
++ indextag=RPI5_S4_Mix_8A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t Mix_8A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8A) have been created.
++ for tagname in '$tag'
++ indextag=RPI5_S4_Mix_8B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t Mix_8B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8B) have been created.
++ for tagname in '$tag'
++ indextag=RPI5_S4_Mix_8C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t Mix_8C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8C) have been created.
++ for tagname in '$tag'
++ indextag=RPI5_S4_Mix_8D
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI5 -t Mix_8D -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8D) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI5_S4_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI5_S4_L001_R2_001.fastq.gz
+Started analysis of RPI5_S4_L001_R1_001.fastq.gz
+Started analysis of RPI5_S4_L001_R2_001.fastq.gz
+Approx 5% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 5% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 10% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 10% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 15% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 15% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 20% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 20% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 25% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 25% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 30% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 30% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 35% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 35% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 40% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 40% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 45% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 45% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 50% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 50% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 55% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 55% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 60% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 60% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 65% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 65% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 70% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 70% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 75% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 75% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 80% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 85% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 80% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 90% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 85% complete for RPI5_S4_L001_R2_001.fastq.gz
+Approx 95% complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 90% complete for RPI5_S4_L001_R2_001.fastq.gz
+Analysis complete for RPI5_S4_L001_R1_001.fastq.gz
+Approx 95% complete for RPI5_S4_L001_R2_001.fastq.gz
+Analysis complete for RPI5_S4_L001_R2_001.fastq.gz
+Failed to process file RPI5_S4_L001_R1_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+Failed to process file RPI5_S4_L001_R2_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI6 4 4
++ s=5
++ pathtotags='../tags/RPI6_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI6_S5.txt
++ tag='L1107
+L1130
+F89-13-101
+ESP163-2009-02
+426-A
+L1119
+269-C
+L1086'
++ for tagname in '$tag'
++ indextag=RPI6_S5_L1107
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t L1107 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1107) have been created.
++ for tagname in '$tag'
++ indextag=RPI6_S5_L1130
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t L1130 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1130) have been created.
++ for tagname in '$tag'
++ indextag=RPI6_S5_F89-13-101
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t F89-13-101 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: F89-13-101) have been created.
++ for tagname in '$tag'
++ indextag=RPI6_S5_ESP163-2009-02
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t ESP163-2009-02 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: ESP163-2009-02) have been created.
++ for tagname in '$tag'
++ indextag=RPI6_S5_426-A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t 426-A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 426-A) have been created.
++ for tagname in '$tag'
++ indextag=RPI6_S5_L1119
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t L1119 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1119) have been created.
++ for tagname in '$tag'
++ indextag=RPI6_S5_269-C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t 269-C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 269-C) have been created.
++ for tagname in '$tag'
++ indextag=RPI6_S5_L1086
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI6 -t L1086 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1086) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI6_S5_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI6_S5_L001_R2_001.fastq.gz
+Started analysis of RPI6_S5_L001_R1_001.fastq.gz
+Started analysis of RPI6_S5_L001_R2_001.fastq.gz
+Approx 5% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 5% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 10% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 10% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 15% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 15% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 20% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 20% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 25% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 25% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 30% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 30% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 35% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 35% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 40% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 40% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 45% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 45% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 50% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 50% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 55% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 55% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 60% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 60% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 65% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 65% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 70% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 70% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 75% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 75% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 80% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 80% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 85% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 85% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 90% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 90% complete for RPI6_S5_L001_R1_001.fastq.gz
+Approx 95% complete for RPI6_S5_L001_R2_001.fastq.gz
+Approx 95% complete for RPI6_S5_L001_R1_001.fastq.gz
+Analysis complete for RPI6_S5_L001_R2_001.fastq.gz
+Analysis complete for RPI6_S5_L001_R1_001.fastq.gz
+Failed to process file RPI6_S5_L001_R2_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+Failed to process file RPI6_S5_L001_R1_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI7 4 4
++ s=6
++ pathtotags='../tags/RPI7_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI7_S6.txt
++ tag='L1107
+F89-13-42
+ESP163-2009-10
+1123
+1113
+F89-13-156
+L1109
+A17'
++ for tagname in '$tag'
++ indextag=RPI7_S6_L1107
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t L1107 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1107) have been created.
++ for tagname in '$tag'
++ indextag=RPI7_S6_F89-13-42
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t F89-13-42 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: F89-13-42) have been created.
++ for tagname in '$tag'
++ indextag=RPI7_S6_ESP163-2009-10
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t ESP163-2009-10 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: ESP163-2009-10) have been created.
++ for tagname in '$tag'
++ indextag=RPI7_S6_1123
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t 1123 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 1123) have been created.
++ for tagname in '$tag'
++ indextag=RPI7_S6_1113
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t 1113 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: 1113) have been created.
++ for tagname in '$tag'
++ indextag=RPI7_S6_F89-13-156
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t F89-13-156 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: F89-13-156) have been created.
++ for tagname in '$tag'
++ indextag=RPI7_S6_L1109
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t L1109 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: L1109) have been created.
++ for tagname in '$tag'
++ indextag=RPI7_S6_A17
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI7 -t A17 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: A17) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI7_S6_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI7_S6_L001_R2_001.fastq.gz
+Started analysis of RPI7_S6_L001_R1_001.fastq.gz
+Started analysis of RPI7_S6_L001_R2_001.fastq.gz
+Approx 5% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 5% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 10% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 10% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 15% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 15% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 20% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 20% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 25% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 25% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 30% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 30% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 35% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 35% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 40% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 40% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 45% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 45% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 50% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 50% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 55% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 55% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 60% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 60% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 65% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 65% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 70% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 70% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 75% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 75% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 80% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 80% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 85% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 85% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 90% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 90% complete for RPI7_S6_L001_R1_001.fastq.gz
+Approx 95% complete for RPI7_S6_L001_R2_001.fastq.gz
+Approx 95% complete for RPI7_S6_L001_R1_001.fastq.gz
+Analysis complete for RPI7_S6_L001_R2_001.fastq.gz
+Analysis complete for RPI7_S6_L001_R1_001.fastq.gz
+Failed to process file RPI7_S6_L001_R2_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+Failed to process file RPI7_S6_L001_R1_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI8 4 4
++ s=7
++ pathtotags='../tags/RPI8_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI8_S7.txt
++ tag='Mix_3A
+Mix_3B
+Mix_3C
+Mix_3D
+Mix_8A
+Mix_8B
+Mix_8C
+Mix_8D'
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_3A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_3A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3A) have been created.
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_3B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_3B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3B) have been created.
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_3C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_3C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3C) have been created.
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_3D
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_3D -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3D) have been created.
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_8A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_8A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8A) have been created.
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_8B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_8B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8B) have been created.
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_8C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_8C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8C) have been created.
++ for tagname in '$tag'
++ indextag=RPI8_S7_Mix_8D
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI8 -t Mix_8D -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8D) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI8_S7_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI8_S7_L001_R2_001.fastq.gz
+Started analysis of RPI8_S7_L001_R1_001.fastq.gz
+Started analysis of RPI8_S7_L001_R2_001.fastq.gz
+Approx 5% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 5% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 10% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 10% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 15% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 20% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 15% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 25% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 20% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 30% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 25% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 35% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 30% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 40% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 35% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 45% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 40% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 50% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 55% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 45% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 60% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 50% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 65% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 55% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 70% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 60% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 75% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 65% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 80% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 70% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 85% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 90% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 75% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 95% complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 80% complete for RPI8_S7_L001_R2_001.fastq.gz
+Analysis complete for RPI8_S7_L001_R1_001.fastq.gz
+Approx 85% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 90% complete for RPI8_S7_L001_R2_001.fastq.gz
+Approx 95% complete for RPI8_S7_L001_R2_001.fastq.gz
+Failed to process file RPI8_S7_L001_R1_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+Analysis complete for RPI8_S7_L001_R2_001.fastq.gz
+Failed to process file RPI8_S7_L001_R2_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
++ for indexname in '$index'
+expr substr $indexname 4 4
+++ expr substr RPI9 4 4
++ s=8
++ pathtotags='../tags/RPI9_*.txt'
+awk '{print $1}' $pathtotags
+++ awk '{print $1}' ../tags/RPI9_S8.txt
++ tag='Mix_3A
+Mix_3B
+Mix_3C
+A17
+Mix_8A
+Mix_8B
+Mix_8C
+Mix_8D'
++ for tagname in '$tag'
++ indextag=RPI9_S8_Mix_3A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t Mix_3A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3A) have been created.
++ for tagname in '$tag'
++ indextag=RPI9_S8_Mix_3B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t Mix_3B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3B) have been created.
++ for tagname in '$tag'
++ indextag=RPI9_S8_Mix_3C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t Mix_3C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_3C) have been created.
++ for tagname in '$tag'
++ indextag=RPI9_S8_A17
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t A17 -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: A17) have been created.
++ for tagname in '$tag'
++ indextag=RPI9_S8_Mix_8A
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t Mix_8A -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8A) have been created.
++ for tagname in '$tag'
++ indextag=RPI9_S8_Mix_8B
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t Mix_8B -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8B) have been created.
++ for tagname in '$tag'
++ indextag=RPI9_S8_Mix_8C
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t Mix_8C -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8C) have been created.
++ for tagname in '$tag'
++ indextag=RPI9_S8_Mix_8D
++ (( 1==1 ))
++ ../../../src/createadapter.sh -i RPI9 -t Mix_8D -o adapter.txt -k
+New sequences will be appended to the former file "adapter.txt".
+Adapter sequences for forward and reverse reads (tag: Mix_8D) have been created.
++ (( 1==1 ))
++ /usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ../../../raw_data/PilotJan2015/RPI9_S8_L001_R1_001.fastq.gz ../../../raw_data/PilotJan2015/RPI9_S8_L001_R2_001.fastq.gz
+Started analysis of RPI9_S8_L001_R1_001.fastq.gz
+Started analysis of RPI9_S8_L001_R2_001.fastq.gz
+Approx 5% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 5% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 10% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 10% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 15% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 15% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 20% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 20% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 25% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 25% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 30% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 30% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 35% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 35% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 40% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 40% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 45% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 45% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 50% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 50% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 55% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 55% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 60% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 60% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 65% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 65% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 70% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 70% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 75% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 75% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 80% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 80% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 85% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 85% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 90% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 90% complete for RPI9_S8_L001_R2_001.fastq.gz
+Approx 95% complete for RPI9_S8_L001_R1_001.fastq.gz
+Approx 95% complete for RPI9_S8_L001_R2_001.fastq.gz
+Analysis complete for RPI9_S8_L001_R1_001.fastq.gz
+Analysis complete for RPI9_S8_L001_R2_001.fastq.gz
+Failed to process file RPI9_S8_L001_R1_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+Failed to process file RPI9_S8_L001_R2_001.fastq.gz
+java.lang.ArrayIndexOutOfBoundsException: 10
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:248)
+	at uk.ac.babraham.FastQC.Graphs.LineGraph.paint(LineGraph.java:114)
+	at uk.ac.babraham.FastQC.Modules.AdapterContent.makeReport(AdapterContent.java:281)
+	at uk.ac.babraham.FastQC.Report.HTMLReportArchive.<init>(HTMLReportArchive.java:131)
+	at uk.ac.babraham.FastQC.Analysis.OfflineRunner.analysisComplete(OfflineRunner.java:163)
+	at uk.ac.babraham.FastQC.Analysis.AnalysisRunner.run(AnalysisRunner.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+
+echo "fastqc done"
++ echo 'fastqc done'
+fastqc done
+
+#Merge png quality files
+../../../../src/quantgen/fastqc_cat-png.bash -I "*_fastqc.zip" -p per_base_quality -o plots_per_base_quality.pdf -c
++ ../../../../src/quantgen/fastqc_cat-png.bash -I '*_fastqc.zip' -p per_base_quality -o plots_per_base_quality.pdf -c
+START fastqc_cat-png.bash 2015-02-25 19:22:28
+cwd: /home/rode/sead/projects/PilotJan2015/qualityraw_PilotJan2015
+extract 'per_base_quality' PNG files from 16 ZIP archives ...
+[RPI3_S2_L001_R1_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI3_S2_L001_R2_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI4_S3_L001_R1_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI4_S3_L001_R2_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI5_S4_L001_R1_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI5_S4_L001_R2_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI6_S5_L001_R1_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI6_S5_L001_R2_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI7_S6_L001_R1_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI7_S6_L001_R2_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI8_S7_L001_R1_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI8_S7_L001_R2_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI9_S8_L001_R1_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+[RPI9_S8_L001_R2_001_fastqc.zip]
+  End-of-central-directory signature not found.  Either this file is not
+  a zipfile, or it constitutes one disk of a multi-part archive.  In the
+  latter case the central directory and zipfile comment will be found on
+  the last disk(s) of this archive.
+concatenate 16 PNG files into a single PDF file ...
+convert: Improper image header `RPI3_S2_L001_R1_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI3_S2_L001_R2_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI4_S3_L001_R1_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI4_S3_L001_R2_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI5_S4_L001_R1_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI5_S4_L001_R2_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI6_S5_L001_R1_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI6_S5_L001_R2_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI7_S6_L001_R1_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI7_S6_L001_R2_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI8_S7_L001_R1_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI8_S7_L001_R2_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI9_S8_L001_R1_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+convert: Improper image header `RPI9_S8_L001_R2_001_fastqc_per_base_quality.png' @ png.c/ReadPNGImage/2923.
+END fastqc_cat-png.bash 2015-02-25 19:22:29 (0d 0h 0m 1s)
+
+echo $qualitydir
++ echo qualityraw_PilotJan2015
+qualityraw_PilotJan2015
+Rscript ../../../src/summary_fastqc.R $project_folder $qualitydir
++ Rscript ../../../src/summary_fastqc.R PilotJan2015 qualityraw_PilotJan2015
+[1] "qualityraw_PilotJan2015"
+nb of zip archives detected: 16
+RPI3_S2_L001_R1_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI3_S2_L001_R2_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI4_S3_L001_R1_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI4_S3_L001_R2_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI5_S4_L001_R1_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI5_S4_L001_R2_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI6_S5_L001_R1_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI6_S5_L001_R2_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI7_S6_L001_R1_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI7_S6_L001_R2_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI8_S7_L001_R1_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI8_S7_L001_R2_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI9_S8_L001_R1_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+RPI9_S8_L001_R2_001_fastqc.zip could no be unzipped.
+Original warning message:
+simpleWarning in unzip(zip.archive, exdir = zipdir): error 1 in extracting from zip file
+
+null device 
+          1 
+
+if (( $1==3 )); then
+cd ~/sead/projects/${project_folder}/$qualitydir
+join -1 1 -2 1 ../qualitydemultiplex_${project_folder}/readcounts.txt ./readcounts.txt > summaryreadcountsposttrim.txt
+
+fi
++ ((  1==3  ))
