@@ -1,0 +1,77 @@
+###################
+# Github tutorial #
+###################
+
+Cf Gitbook V2 on the internet
+
+Redirect the script towards ones account with “Fork”
+Get the modifications on the server, on Marmadais:
+
+Git clone URL_script
+Ex: git clone …/quantgen/git
+
+Problem of certificate verification- >change the bash profile
+Vim ~/.bash_profile
+Paste the line to authorise without any certificate
+
+Change name using:
+git config --global user.name “John Doe”
+git config --global user.email johndoe@example.com
+
+Checking your settings
+git config –list
+
+Quantgen directory has a hidder directory (.git)
+Check it using:
+ls .git
+cat .git/config
+
+if working on a unix project using Windows, change the line endings from crlf to lf:
+git config –global core.autocrlf true
+
+#Creating a new repository#
+###########################
+
+On the main page on Github, select the “+” sign on the top right corner
+Select “New Repository”
+On your cluster, go to the repository where you want to clone the Github repository
+git clone + URL
+git add filename
+git commit –m “description of the files”
+git push origin master
+
+#Making commits#
+################
+
+Copy the modified file in the quantgen directory
+Check for changes using git:
+git status
+
+Once sure about the new script
+git add programname
+Ex: git add demultiplex.py
+git commit –m “add method 4d”
+
+Push the new commit (send the content of the master branch towards the origin):
+git push origin master
+
+Go to the website to check the changes.
+Click on the repository, on the left hand side (under “branch master”), you can see:
+“This branch is 1 commit ahead, 5 commits behind timflutre:master”
+
+You can select “compare” (same level right hand side) to see the differences.
+
+To do a pull request, select: “Pull Request” > Create pull request
+Provide details on the modifications. Then select “Create pull request”
+
+#Updating a repository#
+#######################
+
+git remote –v
+git remote add upstream: https:/url of the origin program
+To get the last changes:
+git fetch upstream
+To move to the master branch:
+git checkout master
+git merge upstream/master
+
