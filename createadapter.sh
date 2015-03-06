@@ -116,8 +116,12 @@ if [[ "${fasta}" == true ]];then
 	echo -e ">PE2rc\n"${seqtagrev}"AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"${seqindex}"ATCTCGTATGCCGTCTTCTCGTTGA" >> $outfile
 
 else
+	if [[ ! -e $outfile ]];then
 
-	#echo -e "Universal_Illumina_Adapter\tAGATCGGAAGAG" >> $outfile
+	echo -e "Universal_Illumina_Adapter\tAGATCGGAAGAG" >> $outfile
+
+	fi
+
 	#echo -e "PE1\tAATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT"${seqtag} >> $outfile
 	#echo -e "PE2\tCAAGCAGAAGACGGCATACGAGAT"${seqindexrev}"GTGACTGGAGTTCAGACGTGTCGTCTTCCGATCT"${seqtag} >> $outfile
 	echo -e "PE1_2rc${seqtagrev}\t"${seqtagrev} >> $outfile

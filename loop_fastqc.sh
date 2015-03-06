@@ -20,7 +20,7 @@ if (( $1==1 )); then
 	echo "analysis on raw_data"
 	qualitydir="qualityraw_${project_folder}"
 	echo $qualitydir
-	datatoanalyse=~/sead/raw_data/${project_folder}/*.fastq.gz
+	datatoanalyse=~/sead/raw_data/${project_folder}/RPI2_*.fastq.gz
 elif (( $1==2 )); then
 	qualitydir="qualitydemultiplex_${project_folder}"
 	datatoanalyse=~/sead/projects/${project_folder}/demultiplex_${project_folder}/*.fastq.gz  
@@ -44,6 +44,8 @@ echo "fastqc done"
 
 cd ../../../src
 echo $qualitydir
+pwd
+
 Rscript summary_fastqc.R $project_folder $qualitydir
 
 if (( $1==3 )); then

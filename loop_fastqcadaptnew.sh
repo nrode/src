@@ -53,10 +53,6 @@ for indexname in $index; do
 	tag=$(awk '{print $1}' $pathtotags)
 	#tag="L1107"
 
-	#Add Illumina Universal Adapter at the begining of the adapter file
-	echo -e "Universal_Illumina_Adapter\tAGATCGGAAGAG" >> adapter.txt
-
-	
 	for tagname in $tag;do
 
 		indextag=${indexname}_S${s}_${tagname}
