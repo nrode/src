@@ -1,6 +1,5 @@
 #!/bin/bash
 #!/usr/local/bioinfo/R/bin/Rscript
-
 #Aim: perform a fastqc analysis on a folder containing either the rawdata (argument1=1) or the demultiplexed data (arument1=2) in a given folder (argument 2)
 
 if [ "$1" -ne "1" ] && [ "$1" -ne "2" ] && [ "$1" -ne "3" ] || [ -z $2 ]
@@ -15,38 +14,87 @@ exit
 fi
 
 project_folder=$2
-cd  ~/sead/projects/$project_folder
+cd  ~/sead/projects/${project_folder}
 if (( $1==1 )); then
 	echo "analysis on raw_data"
 	qualitydir="qualityraw_${project_folder}"
 	echo $qualitydir
-	datatoanalyse=~/sead/raw_data/${project_folder}/RPI2_*.fastq.gz
+	pathtodata=../../../raw_data/${project_folder}
 elif (( $1==2 )); then
+	echo "analysis on demultiplexed data"
 	qualitydir="qualitydemultiplex_${project_folder}"
-	datatoanalyse=~/sead/projects/${project_folder}/demultiplex_${project_folder}/*.fastq.gz  
+	pathtodata=../demultiplex_${project_folder}
 else
+	echo "analysis on trimmed data"
 	qualitydir="qualityposttrim_${project_folder}"
-	datatoanalyse=~/sead/projects/${project_folder}/trimmomatic_${project_folder}/*.fastq.gz
+	pathtodata=../trimmomatic_${project_folder}
 fi
+
 if [[ -d $qualitydir ]]; then
 	echo "Former folder ($qualitydir) has been removed."
-	rm -r $qualitydir;
+	rm -r $qualitydir
 fi
-echo $qualitydir
+
 mkdir $qualitydir
 cd $qualitydir
-/usr/local/bioinfo/FastQC/fastqc -o ./ -t 2 $datatoanalyse
+
+
+index=$(awk '{print $1}' ../tags/index.txt)
+
+#index="RPI6"
+
+#Loop over each index
+for indexname in $index; do
+	
+	s=$(($(expr substr $indexname 4 4)-1))
+
+	pathtotags="../tags/${indexname}_*.txt"
+	tag=$(awk '{print $1}' $pathtotags)
+	#tag="L1107"
+
+	if [[ -e adapter.txt ]]; then
+        	echo "Former file (adapter.txt) has been removed."
+        	rm adapter.txt
+	fi
+
+	for tagname in $tag;do
+
+		indextag=${indexname}_S${s}_${tagname}
+
+		if (($1==1));then
+	
+			#Keep previous file and append sequences for this index/tag combination
+			../../../src/createadapter.sh -i $indexname -t $tagname -o adapter.txt -k
+	
+		else
+			#Erase previous file and create a new file for this index/tag combination
+			../../../src/createadapter.sh -i $indexname -t $tagname -o adapter.txt
+
+			#Analysis with in-house adapters
+			/usr/local/bioinfo/FastQC/fastqc -o ./ -a adapter.txt -t 2 ${pathtodata}/${indextag}_R*.fastq.gz; 
+	
+		fi 
+	done
+
+	if (($1==1));then
+		
+		#Analysis with in-house adapters
+		/usr/local/bioinfo/FastQC/fastqc -o ./ -a ./adapter.txt -t 2 ${pathtodata}/${indexname}*.fastq.gz
+	fi
+
+done
+
 echo "fastqc done"
 
 #Merge png quality files
 ../../../../src/quantgen/fastqc_cat-png.bash -I "*_fastqc.zip" -p per_base_quality -o plots_per_base_quality.pdf -c
 
-
-cd ../../../src
 echo $qualitydir
-pwd
 
-Rscript summary_fastqc.R $project_folder $qualitydir
+. /etc/profile.d/modules.sh
+module load compiler/gcc-4.8.2
+
+Rscript ../../../src/summary_fastqc.R $project_folder $qualitydir
 
 if (( $1==3 )); then
 cd ~/sead/projects/${project_folder}/$qualitydir

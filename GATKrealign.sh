@@ -14,7 +14,7 @@
 /usr/local/jre/bin/java -jar /usr/local/bioinfo/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator --help
 
 #With encoding option (doesn't work)
-/usr/local/jre/bin/java -jar /usr/local/bioinfo/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -o realign_PilotJan2015/real/RTC.intervals -I ./mapping_PilotJan2015/mapping_PilotJan2015.bam -fixMisencodedQuals -R ../../raw_data/RefGenome/JCVI.Medtr.v4.20130313.fasta
+#/usr/local/jre/bin/java -jar /usr/local/bioinfo/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -o realign_PilotJan2015/real/RTC.intervals -I ./mapping_PilotJan2015/mapping_PilotJan2015.bam -fixMisencodedQuals -R ../../raw_data/RefGenome/JCVI.Medtr.v4.20130313.fasta
 
 #Look for positions to be realigned
 #Without encoding option
@@ -28,15 +28,14 @@
 samtools index realign_PilotJan2015/mapping_PilotJan2015_realigned.bam
 
 
-cd SNPCallingbcftools
+#cd SNPCallingbcftools
 
 #SNP Calling with a pipe
-samtools mpileup -ugf ../../../raw_data/RefGenome/JCVI.Medtr.v4.20130313.fasta ../realign_PilotJan2015/mapping_PilotJan2015_realigned.bam | bcftools call -vmO z -o PilotJan2015.vcf.gz
+#samtools mpileup -ugf ../../../raw_data/RefGenome/JCVI.Medtr.v4.20130313.fasta ../realign_PilotJan2015/mapping_PilotJan2015_realigned.bam | bcftools call -vmO z -o PilotJan2015.vcf.gz
 
 #a/SNPCalling in two steps
-samtools mpileup -go PilotJan2015.bcf -f ../../../raw_data/RefGenome/JCVI.Medtr.v4.20130313.fasta ../realign_PilotJan2015/mapping_PilotJan2015_realigned.bam
-continue here after 9475409
-bcftools call -vmO z -o PilotJan2015.vcf.gz PilotJan2015.bcf
+#samtools mpileup -go PilotJan2015.bcf -f ../../../raw_data/RefGenome/JCVI.Medtr.v4.20130313.fasta ../realign_PilotJan2015/mapping_PilotJan2015_realigned.bam
+#bcftools call -vmO z -o PilotJan2015.vcf.gz PilotJan2015.bcf
 
 #File preparation
 tabix -p vcf PilotJan2015.vcf.gz

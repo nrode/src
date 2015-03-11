@@ -110,8 +110,8 @@ if [[ "${fasta}" == true ]];then
 
 	echo -e ">Prefix_PE/1\nAATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT"${seqtag} >> $outfile
 	echo -e ">Prefix_PE/2\nCAAGCAGAAGACGGCATACGAGAT"${seqindexrev}"GTGACTGGAGTTCAGACGTGTCGTCTTCCGATCT"${seqtag} >> $outfile
-	echo -e ">PE1\nAATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT"${seqtag} >> $outfile
-	echo -e ">PE2\nCAAGCAGAAGACGGCATACGAGAT"${seqindexrev}"GTGACTGGAGTTCAGACGTGTCGTCTTCCGATCT"${seqtag} >> $outfile
+	#echo -e ">PE1\nAATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT"${seqtag} >> $outfile
+	#echo -e ">PE2\nCAAGCAGAAGACGGCATACGAGAT"${seqindexrev}"GTGACTGGAGTTCAGACGTGTCGTCTTCCGATCT"${seqtag} >> $outfile
 	echo -e ">PE1rc\n"${seqtagrev}"AGATCGGAAGAGCACACGTCTGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATTA" >> $outfile
 	echo -e ">PE2rc\n"${seqtagrev}"AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"${seqindex}"ATCTCGTATGCCGTCTTCTCGTTGA" >> $outfile
 
@@ -124,7 +124,7 @@ else
 
 	#echo -e "PE1\tAATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT"${seqtag} >> $outfile
 	#echo -e "PE2\tCAAGCAGAAGACGGCATACGAGAT"${seqindexrev}"GTGACTGGAGTTCAGACGTGTCGTCTTCCGATCT"${seqtag} >> $outfile
-	echo -e "PE1_2rc${seqtagrev}\t"${seqtagrev} >> $outfile
+	echo -e "TagRC6bp\t"${seqtagrev}"AGATCG" >> $outfile
 	#echo -e "PE1_2rc${seqtagrev}+4bp\t"${seqtagrev}"AGAT" >> $outfile
 	#echo -e "PE1_2rc${seqtagrev}+8bp\t"${seqtagrev}"AGATCGGA" >> $outfile
 	#echo -e "PE1rc\t"${seqtagrev}"AGATCGGAAGAGCACACGTCTGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATTA" >> $outfile
