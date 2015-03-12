@@ -101,3 +101,5 @@ To move to the master branch:
 git checkout master
 git merge upstream/master
 
+To overwrite the changes and any commit that haven't been pushed
+git reset --hard origin/master
