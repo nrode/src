@@ -70,6 +70,26 @@ You can select “compare” (same level right hand side) to see the differences
 To do a pull request, select: “Pull Request” > Create pull request
 Provide details on the modifications. Then select “Create pull request”
 
+#Dealing with version conflicts
+
+After adding the program, the command "git checkout master" results in the
+following error:
+error: you need to resolve your current index first
+
+You will need to open the file with conflicts.
+The conflicting section(s) will appear as:
+
+++<<<<<<< HEAD
+toto<-"bip"
+
+++=======
+
+toto<-"bap"
+
+++>>>>>>> upstream/master
+
+You will need to choose (or edit) one of the sections.
+
 #Updating a repository#
 #######################
 
