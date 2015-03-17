@@ -86,15 +86,8 @@ done
 
 echo "fastqc done"
 
-#Merge png quality files
-../../../../src/quantgen/fastqc_cat-png.bash -I "*_fastqc.zip" -p per_base_quality -o plots_per_base_quality.pdf -c
 
-echo $qualitydir
-
-. /etc/profile.d/modules.sh
-module load compiler/gcc-4.8.2
-
-Rscript ../../../src/summary_fastqc.R $project_folder $qualitydir
+../../../src/pdf_fastqc.sh $project_folder $qualitydir
 
 if (( $1==3 )); then
 cd ~/sead/projects/${project_folder}/$qualitydir
